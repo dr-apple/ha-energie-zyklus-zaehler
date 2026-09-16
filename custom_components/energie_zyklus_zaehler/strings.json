@@ -1,0 +1,17 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Energie Zyklus Zähler",
+        "description": "Welchen Energiesensor soll getrackt werden? Tag/Woche/Monat/Jahr-Zähler lassen sich danach auf der Geräteseite einzeln ein- und ausschalten.",
+        "data": {
+          "source": "Energiesensor",
+          "name": "Name (optional)"
+        }
+      }
+    },
+    "abort": {
+      "already_configured": "Für diesen Sensor existiert bereits ein Eintrag."
+    }
+  }
+}

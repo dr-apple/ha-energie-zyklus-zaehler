@@ -1,0 +1,11 @@
+{
+  "domain": "energie_zyklus_zaehler",
+  "name": "Energie Zyklus Zähler",
+  "codeowners": ["@dr-apple"],
+  "config_flow": true,
+  "dependencies": ["utility_meter"],
+  "documentation": "https://github.com/dr-apple/ha-energie-zyklus-zaehler",
+  "issue_tracker": "https://github.com/dr-apple/ha-energie-zyklus-zaehler/issues",
+  "iot_class": "calculated",
+  "version": "0.1.0"
+}
