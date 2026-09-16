@@ -48,9 +48,18 @@ Copy `custom_components/energie_zyklus_zaehler` into your
 
 1. **Settings → Devices & Services → Add Integration → "Energie Zyklus
    Zähler"**.
-2. Pick the energy sensor to track (filtered to `device_class: energy`) and
-   optionally give it a name — defaults to the sensor's own friendly name.
-3. Repeat once per smart plug / energy sensor you want counters for.
+2. Pick one of two sources:
+   - **Echten Energiesensor verwenden** — pick any existing energy sensor
+     (filtered to `device_class: energy`), optionally give it a name.
+   - **Verbrauch simulieren** — for a device with no real power measurement
+     but a known, roughly constant draw (a satellite distributor running
+     24/7, an always-on network switch, ...): give it a name and a wattage.
+     A `Simulierte Energie` sensor then accumulates kWh over time from that
+     constant figure, exactly like a real total_increasing energy sensor —
+     the wattage stays live-editable afterward via a `Simulierte Leistung`
+     number entity on the same device page, no need to remove and re-add.
+3. Repeat once per smart plug / energy sensor / simulated device you want
+   counters for.
 4. On each device page, toggle the four switches to pick which cycles you
    actually want for that source.
 
@@ -62,9 +71,12 @@ Copy `custom_components/energie_zyklus_zaehler` into your
   them exist for a given source.
 - Removing the integration entry for a source removes every `utility_meter`
   entry it created for that source too — nothing is left orphaned.
-- A source sensor must report `state_class: total_increasing` (or `total`)
-  and a `device_class: energy` — the same requirement `utility_meter` itself
-  has.
+- A real source sensor must report `state_class: total_increasing` (or
+  `total`) and a `device_class: energy` — the same requirement `utility_meter`
+  itself has. A simulated source already satisfies this by construction.
+- Simulation assumes a *constant* load. For a device whose draw actually
+  varies, add a real power-metered plug instead — this won't track spikes
+  or idle periods.
 
 ## License
 

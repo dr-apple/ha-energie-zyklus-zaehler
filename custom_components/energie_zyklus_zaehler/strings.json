@@ -3,10 +3,25 @@
     "step": {
       "user": {
         "title": "Energie Zyklus Zähler",
-        "description": "Welchen Energiesensor soll getrackt werden? Tag/Woche/Monat/Jahr-Zähler lassen sich danach auf der Geräteseite einzeln ein- und ausschalten.",
+        "menu_options": {
+          "sensor": "Echten Energiesensor verwenden",
+          "simulate": "Verbrauch simulieren (konstante Leistung)"
+        }
+      },
+      "sensor": {
+        "title": "Energiesensor auswählen",
+        "description": "Tag/Woche/Monat/Jahr-Zähler lassen sich danach auf der Geräteseite einzeln ein- und ausschalten.",
         "data": {
           "source": "Energiesensor",
           "name": "Name (optional)"
+        }
+      },
+      "simulate": {
+        "title": "Verbrauch simulieren",
+        "description": "Für Geräte ohne echten Messsensor, die durchgehend (oder meistens) die gleiche Leistung ziehen, z. B. ein Satellitenverteiler.",
+        "data": {
+          "name": "Name",
+          "watts": "Simulierte Leistung"
         }
       }
     },

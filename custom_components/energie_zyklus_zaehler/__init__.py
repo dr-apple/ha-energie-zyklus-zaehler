@@ -1,12 +1,13 @@
 """Energie Zyklus Zähler.
 
-For one tracked energy source, exposes a Tag/Woche/Monat/Jahr switch
-each. Rather than reimplementing reset-cycle math (month lengths, week
-start, leap years, source resets) this delegates the actual counting to
-Home Assistant's own built-in utility_meter integration -- one
-utility_meter config entry per active switch, created and removed
-automatically as switches are toggled, with the resulting sensor
-folded onto this source's own device page.
+For one tracked energy source -- a real sensor, or a simulated constant
+load -- exposes a Tag/Woche/Monat/Jahr switch each. Rather than
+reimplementing reset-cycle math (month lengths, week start, leap years,
+source resets) this delegates the actual counting to Home Assistant's
+own built-in utility_meter integration -- one utility_meter config
+entry per active switch, created and removed automatically as switches
+are toggled, with the resulting sensor folded onto this source's own
+device page.
 """
 from __future__ import annotations
 
@@ -16,15 +17,29 @@ from homeassistant.config_entries import SOURCE_USER, ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr, entity_registry as er
 
-from .const import CONF_METERS, CONF_SOURCE, CYCLES, DOMAIN
+from .const import CONF_METERS, CONF_MODE, CONF_SOURCE, CYCLES, DOMAIN, MODE_SIMULATE
 
 _LOGGER = logging.getLogger(__name__)
 
-PLATFORMS = ["switch"]
+
+def _platforms_for(entry: ConfigEntry) -> list[str]:
+    platforms = ["switch"]
+    if entry.data.get(CONF_MODE) == MODE_SIMULATE:
+        platforms = ["sensor", "number", *platforms]
+    return platforms
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+    await hass.config_entries.async_forward_entry_setups(entry, _platforms_for(entry))
+
+    if entry.data.get(CONF_MODE) == MODE_SIMULATE and CONF_SOURCE not in entry.data:
+        registry = er.async_get(hass)
+        unique_id = f"{entry.entry_id}_simulated_energy"
+        entity_id = registry.async_get_entity_id("sensor", DOMAIN, unique_id)
+        if entity_id:
+            new_data = dict(entry.data)
+            new_data[CONF_SOURCE] = entity_id
+            hass.config_entries.async_update_entry(entry, data=new_data)
 
     manager = MeterManager(hass, entry)
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = manager
@@ -33,7 +48,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
+    unload_ok = await hass.config_entries.async_unload_platforms(entry, _platforms_for(entry))
     if unload_ok:
         hass.data[DOMAIN].pop(entry.entry_id, None)
     return unload_ok
@@ -124,7 +139,9 @@ class MeterManager:
     def _attach_to_device(self, meter_entry_id: str) -> None:
         """Fold the utility_meter's own sensor onto this source's device page."""
         device_registry = dr.async_get(self.hass)
-        device = device_registry.async_get_device(identifiers={(DOMAIN, self.entry.entry_id)})
+        device = device_registry.async_get_device_by_identifier(
+            (DOMAIN, self.entry.entry_id), self.entry.entry_id
+        )
         if device is None:
             return
         entity_registry = er.async_get(self.hass)

@@ -5,6 +5,13 @@ INTEGRATION_TITLE = "Energie Zyklus Zähler"
 
 CONF_SOURCE = "source"
 CONF_METERS = "meters"
+CONF_MODE = "mode"
+CONF_WATTS = "watts"
+
+MODE_SENSOR = "sensor"
+MODE_SIMULATE = "simulate"
+
+SIMULATE_UPDATE_SECONDS = 60
 
 # One entry per selectable reset cycle. `cycle` is the value the built-in
 # utility_meter config flow expects; `suffix` becomes part of that meter's
