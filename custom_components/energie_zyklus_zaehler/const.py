@@ -7,6 +7,7 @@ CONF_SOURCE = "source"
 CONF_METERS = "meters"
 CONF_MODE = "mode"
 CONF_WATTS = "watts"
+CONF_ENABLE_ENTITY = "enable_entity"
 
 MODE_SENSOR = "sensor"
 MODE_SIMULATE = "simulate"

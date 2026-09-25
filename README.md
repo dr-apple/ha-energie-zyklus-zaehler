@@ -58,6 +58,11 @@ Copy `custom_components/energie_zyklus_zaehler` into your
      constant figure, exactly like a real total_increasing energy sensor —
      the wattage stays live-editable afterward via a `Simulierte Leistung`
      number entity on the same device page, no need to remove and re-add.
+     **Optional:** pick a gate entity (a switch, `input_boolean`, binary sensor,
+     ...) — the load is then only counted while that entity is `on`, e.g. a
+     garden pump that draws 700 W only while `switch.garten_wasserpumpe` is on.
+     The gate can be changed or cleared later via the entry's **Configure**
+     button.
 3. Repeat once per smart plug / energy sensor / simulated device you want
    counters for.
 4. On each device page, toggle the four switches to pick which cycles you
@@ -74,6 +79,9 @@ Copy `custom_components/energie_zyklus_zaehler` into your
 - A real source sensor must report `state_class: total_increasing` (or
   `total`) and a `device_class: energy` — the same requirement `utility_meter`
   itself has. A simulated source already satisfies this by construction.
+- With a gate entity, energy is booked exactly for the periods it was `on`
+  (state changes are accounted for at the moment they happen, not just at
+  the 60 s tick). `unknown`/`unavailable` count as off.
 - Simulation assumes a *constant* load. For a device whose draw actually
   varies, add a real power-metered plug instead — this won't track spikes
   or idle periods.

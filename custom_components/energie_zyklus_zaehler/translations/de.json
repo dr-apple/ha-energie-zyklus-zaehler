@@ -18,15 +18,30 @@
       },
       "simulate": {
         "title": "Verbrauch simulieren",
-        "description": "Für Geräte ohne echten Messsensor, die durchgehend (oder meistens) die gleiche Leistung ziehen, z. B. ein Satellitenverteiler.",
+        "description": "Für Geräte ohne echten Messsensor, die (wenn sie laufen) die gleiche Leistung ziehen, z. B. ein Satellitenverteiler oder eine Wasserpumpe. Optional: eine Entität (z. B. ein Schalter), bei der der Verbrauch nur gezählt wird, solange sie an ist.",
         "data": {
           "name": "Name",
-          "watts": "Simulierte Leistung"
+          "watts": "Simulierte Leistung",
+          "enable_entity": "Nur zählen, wenn diese Entität an ist (optional)"
         }
       }
     },
     "abort": {
       "already_configured": "Für diesen Sensor existiert bereits ein Eintrag."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Simulierten Verbrauch anpassen",
+        "description": "Der Verbrauch wird nur gezählt, solange diese Entität an ist. Feld leeren = Gerät zieht dauerhaft Strom.",
+        "data": {
+          "enable_entity": "Nur zählen, wenn diese Entität an ist"
+        }
+      }
+    },
+    "abort": {
+      "nur_simulation": "Diese Optionen gibt es nur für simulierte Geräte."
     }
   }
 }

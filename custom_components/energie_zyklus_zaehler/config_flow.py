@@ -10,11 +10,26 @@ import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.helpers import selector
 
-from .const import CONF_MODE, CONF_SOURCE, CONF_WATTS, DOMAIN, MODE_SENSOR, MODE_SIMULATE
+from homeassistant.core import callback
+
+from .const import (
+    CONF_ENABLE_ENTITY,
+    CONF_MODE,
+    CONF_SOURCE,
+    CONF_WATTS,
+    DOMAIN,
+    MODE_SENSOR,
+    MODE_SIMULATE,
+)
 
 
 class EnergieZyklusZaehlerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     VERSION = 1
+
+    @staticmethod
+    @callback
+    def async_get_options_flow(config_entry: config_entries.ConfigEntry) -> config_entries.OptionsFlow:
+        return EnergieZyklusZaehlerOptionsFlow()
 
     async def async_step_user(self, user_input: dict | None = None) -> config_entries.ConfigFlowResult:
         return self.async_show_menu(step_id="user", menu_options=["sensor", "simulate"])
@@ -53,9 +68,10 @@ class EnergieZyklusZaehlerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             if not name:
                 errors["name"] = "required"
             else:
-                return self.async_create_entry(
-                    title=name, data={CONF_MODE: MODE_SIMULATE, CONF_WATTS: watts}
-                )
+                data = {CONF_MODE: MODE_SIMULATE, CONF_WATTS: watts}
+                if user_input.get(CONF_ENABLE_ENTITY):
+                    data[CONF_ENABLE_ENTITY] = user_input[CONF_ENABLE_ENTITY]
+                return self.async_create_entry(title=name, data=data)
 
         schema = vol.Schema(
             {
@@ -63,6 +79,32 @@ class EnergieZyklusZaehlerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 vol.Required(CONF_WATTS): selector.NumberSelector(
                     selector.NumberSelectorConfig(min=0, max=20000, step=1, unit_of_measurement="W")
                 ),
+                vol.Optional(CONF_ENABLE_ENTITY): selector.EntitySelector(),
             }
         )
         return self.async_show_form(step_id="simulate", data_schema=schema, errors=errors)
+
+
+class EnergieZyklusZaehlerOptionsFlow(config_entries.OptionsFlow):
+    """Change (or clear) the entity that gates a simulated load later on."""
+
+    async def async_step_init(self, user_input: dict | None = None) -> config_entries.ConfigFlowResult:
+        entry = self.config_entry
+        if entry.data.get(CONF_MODE) != MODE_SIMULATE:
+            return self.async_abort(reason="nur_simulation")
+
+        if user_input is not None:
+            new_data = dict(entry.data)
+            gate = user_input.get(CONF_ENABLE_ENTITY)
+            if gate:
+                new_data[CONF_ENABLE_ENTITY] = gate
+            else:
+                new_data.pop(CONF_ENABLE_ENTITY, None)
+            self.hass.config_entries.async_update_entry(entry, data=new_data)
+            return self.async_create_entry(data=dict(entry.options))
+
+        schema = self.add_suggested_values_to_schema(
+            vol.Schema({vol.Optional(CONF_ENABLE_ENTITY): selector.EntitySelector()}),
+            {CONF_ENABLE_ENTITY: entry.data.get(CONF_ENABLE_ENTITY)},
+        )
+        return self.async_show_form(step_id="init", data_schema=schema)
