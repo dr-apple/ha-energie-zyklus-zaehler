@@ -58,6 +58,10 @@ Copy `custom_components/energie_zyklus_zaehler` into your
      constant figure, exactly like a real total_increasing energy sensor —
      the wattage stays live-editable afterward via a `Simulierte Leistung`
      number entity on the same device page, no need to remove and re-add.
+     A `Leistung` power sensor (W, `device_class: power`) on the same device
+     page shows the current draw (0 W while the gate entity is off), so the
+     simulated device can also be picked as a power sensor, e.g. in the
+     Energy dashboard.
      **Optional:** pick a gate entity (a switch, `input_boolean`, binary sensor,
      ...) — the load is then only counted while that entity is `on`, e.g. a
      garden pump that draws 700 W only while `switch.garten_wasserpumpe` is on.

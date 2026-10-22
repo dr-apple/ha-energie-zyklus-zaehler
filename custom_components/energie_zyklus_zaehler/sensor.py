@@ -12,7 +12,7 @@ from datetime import datetime, timedelta
 
 from homeassistant.components.sensor import SensorDeviceClass, SensorEntity, SensorStateClass
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import UnitOfEnergy
+from homeassistant.const import UnitOfEnergy, UnitOfPower
 from homeassistant.core import Event, HomeAssistant, callback
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -37,7 +37,9 @@ async def async_setup_entry(
     entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    async_add_entities([SimulatedEnergySensor(hass, entry)])
+    async_add_entities(
+        [SimulatedEnergySensor(hass, entry), SimulatedPowerSensor(hass, entry)]
+    )
 
 
 class SimulatedEnergySensor(SensorEntity, RestoreEntity):
@@ -145,3 +147,74 @@ class SimulatedEnergySensor(SensorEntity, RestoreEntity):
         self._accumulate(now)
         self._active = self._gate_is_on()
         self.async_write_ha_state()
+
+
+class SimulatedPowerSensor(SensorEntity):
+    """Current simulated draw in watts.
+
+    Mirrors the configured wattage while the load counts (no gate entity, or
+    the gate entity is on) and reads 0 W otherwise. It exists so the
+    simulated device offers a real power sensor, e.g. for the Energy
+    dashboard's power selection, next to the editable `Simulierte Leistung`
+    number.
+    """
+
+    _attr_has_entity_name = True
+    _attr_name = "Leistung"
+    _attr_device_class = SensorDeviceClass.POWER
+    _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_native_unit_of_measurement = UnitOfPower.WATT
+    _attr_icon = "mdi:flash"
+    _attr_should_poll = False
+
+    def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
+        self.hass = hass
+        self._entry = entry
+        self._attr_unique_id = f"{entry.entry_id}_simulated_power"
+        self._gate: str | None = None
+        self._gate_unsub = None
+
+    @property
+    def device_info(self) -> DeviceInfo:
+        return DeviceInfo(
+            identifiers={(DOMAIN, self._entry.entry_id)},
+            name=self._entry.title,
+            manufacturer="dr-apple",
+            model=INTEGRATION_TITLE,
+        )
+
+    @property
+    def native_value(self) -> float:
+        gate = self._entry.data.get(CONF_ENABLE_ENTITY)
+        if gate:
+            state = self.hass.states.get(gate)
+            if state is None or state.state != "on":
+                return 0
+        return self._entry.data.get(CONF_WATTS, 0)
+
+    def _subscribe_gate(self) -> None:
+        if self._gate_unsub is not None:
+            self._gate_unsub()
+            self._gate_unsub = None
+        self._gate = self._entry.data.get(CONF_ENABLE_ENTITY)
+        if self._gate:
+            self._gate_unsub = async_track_state_change_event(
+                self.hass, [self._gate], self._gate_changed
+            )
+
+    @callback
+    def _gate_changed(self, event: Event) -> None:
+        self.async_write_ha_state()
+
+    async def _entry_updated(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
+        if entry.data.get(CONF_ENABLE_ENTITY) != self._gate:
+            self._subscribe_gate()
+        self.async_write_ha_state()
+
+    async def async_added_to_hass(self) -> None:
+        await super().async_added_to_hass()
+        self._subscribe_gate()
+        self.async_on_remove(
+            lambda: self._gate_unsub() if self._gate_unsub is not None else None
+        )
+        self.async_on_remove(self._entry.add_update_listener(self._entry_updated))
