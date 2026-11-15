@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 600" width="520" height="600" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif">
+<rect width="520" height="600" rx="16" fill="#ffffff" stroke="#e1e4e8"/>
+<text x="24" y="40" font-size="21" font-weight="600" fill="#212121">Coffee machine</text>
+<text x="24" y="62" font-size="13" fill="#727272">Device page (example)</text>
+<text x="24" y="110" font-size="13" font-weight="700" letter-spacing="1" fill="#727272">CONFIGURATION</text>
+<line x1="24" y1="120" x2="496" y2="120" stroke="#eee"/>
+<circle cx="44" cy="156" r="17" fill="#43a047" fill-opacity="0.14"/>
+<text x="44" y="162" text-anchor="middle" font-size="16" fill="#43a047">◷</text>
+<text x="76" y="161" font-size="15.5" fill="#212121">Tageszähler aktiv (day)</text>
+<rect x="450" y="147" width="40" height="18" rx="9" fill="#43a047" fill-opacity="0.5"/>
+<circle cx="480" cy="156" r="11" fill="#43a047" stroke="#ccc" stroke-width="0"/>
+<circle cx="44" cy="208" r="17" fill="#9e9e9e" fill-opacity="0.14"/>
+<text x="44" y="214" text-anchor="middle" font-size="16" fill="#9e9e9e">◷</text>
+<text x="76" y="213" font-size="15.5" fill="#212121">Wochenzähler aktiv (week)</text>
+<rect x="450" y="199" width="40" height="18" rx="9" fill="#bdbdbd" fill-opacity="1"/>
+<circle cx="460" cy="208" r="11" fill="#fafafa" stroke="#ccc" stroke-width="1"/>
+<circle cx="44" cy="260" r="17" fill="#43a047" fill-opacity="0.14"/>
+<text x="44" y="266" text-anchor="middle" font-size="16" fill="#43a047">◷</text>
+<text x="76" y="265" font-size="15.5" fill="#212121">Monatszähler aktiv (month)</text>
+<rect x="450" y="251" width="40" height="18" rx="9" fill="#43a047" fill-opacity="0.5"/>
+<circle cx="480" cy="260" r="11" fill="#43a047" stroke="#ccc" stroke-width="0"/>
+<circle cx="44" cy="312" r="17" fill="#43a047" fill-opacity="0.14"/>
+<text x="44" y="318" text-anchor="middle" font-size="16" fill="#43a047">◷</text>
+<text x="76" y="317" font-size="15.5" fill="#212121">Jahreszähler aktiv (year)</text>
+<rect x="450" y="303" width="40" height="18" rx="9" fill="#43a047" fill-opacity="0.5"/>
+<circle cx="480" cy="312" r="11" fill="#43a047" stroke="#ccc" stroke-width="0"/>
+<text x="24" y="370" font-size="13" font-weight="700" letter-spacing="1" fill="#727272">SENSORS</text>
+<line x1="24" y1="380" x2="496" y2="380" stroke="#eee"/>
+<circle cx="44" cy="416" r="17" fill="#44739e" fill-opacity="0.14"/>
+<text x="44" y="422" text-anchor="middle" font-size="16" fill="#44739e">⚡</text>
+<text x="76" y="421" font-size="15.5" fill="#212121">Coffee machine daily</text>
+<text x="496" y="421" text-anchor="end" font-size="15" fill="#424242">0.42 kWh</text>
+<circle cx="44" cy="468" r="17" fill="#44739e" fill-opacity="0.14"/>
+<text x="44" y="474" text-anchor="middle" font-size="16" fill="#44739e">⚡</text>
+<text x="76" y="473" font-size="15.5" fill="#212121">Coffee machine monthly</text>
+<text x="496" y="473" text-anchor="end" font-size="15" fill="#424242">9.87 kWh</text>
+<circle cx="44" cy="520" r="17" fill="#44739e" fill-opacity="0.14"/>
+<text x="44" y="526" text-anchor="middle" font-size="16" fill="#44739e">⚡</text>
+<text x="76" y="525" font-size="15.5" fill="#212121">Coffee machine yearly</text>
+<text x="496" y="525" text-anchor="end" font-size="15" fill="#424242">112.30 kWh</text>
+<text x="260.0" y="582" text-anchor="middle" font-size="12" font-style="italic" fill="#9e9e9e">Illustration – week switch turned off, so no weekly counter exists</text>
+</svg>
