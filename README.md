@@ -42,6 +42,10 @@ device page *are* the configuration.
 
 *Illustration – the week switch is off, so no weekly counter exists for this plug.*
 
+![Device page of a simulated garden pump with cycle switches and counters](docs/images/ha-device-page.png)
+
+*Real screenshot from a Home Assistant installation (German UI, personal data replaced).*
+
 ## Installation
 
 ### HACS (custom repository)

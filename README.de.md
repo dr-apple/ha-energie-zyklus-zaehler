@@ -27,6 +27,10 @@ Kein Optionsdialog, kein YAML, keine eigene Einstellungsseite – die Schalter a
 
 *Illustration – der Wochenschalter ist aus, deshalb gibt es für diesen Stecker keinen Wochenzähler.*
 
+![Geräteseite einer simulierten Gartenpumpe mit Zyklus-Schaltern und Zählern](docs/images/ha-device-page.png)
+
+*Echter Screenshot aus einer Home-Assistant-Installation (persönliche Daten ersetzt).*
+
 ## Installation
 
 ### HACS (benutzerdefiniertes Repository)
