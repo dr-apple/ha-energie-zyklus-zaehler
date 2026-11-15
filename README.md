@@ -1,5 +1,11 @@
 # Energie Zyklus Zähler
 
+**English** · [Deutsch](README.de.md)
+
+[![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://hacs.xyz)
+
+![Energie Zyklus Zähler](docs/images/banner.svg)
+
 A small Home Assistant integration for the common "I have a lot of power-metered
 smart plugs and want Day/Week/Month/Year consumption counters for each one"
 situation — without hand-building four [`utility_meter`](https://www.home-assistant.io/integrations/utility_meter/)
@@ -29,6 +35,16 @@ This integration is a thin, entity-based manager on top of `utility_meter`:
 
 No options flow, no YAML, no separate settings screen — the switches on the
 device page *are* the configuration.
+
+![How it works: energy sensor → switches → utility_meter → Energy dashboard](docs/images/how-it-works.svg)
+
+<img src="docs/images/device-page.svg" alt="Device page with four cycle switches and the resulting counters" width="460">
+
+*Illustration – the week switch is off, so no weekly counter exists for this plug.*
+
+![Device page of a simulated garden pump with cycle switches and counters](docs/images/ha-device-page.png)
+
+*Real screenshot from a Home Assistant installation (German UI, personal data replaced).*
 
 ## Installation
 
@@ -89,6 +105,31 @@ Copy `custom_components/energie_zyklus_zaehler` into your
 - Simulation assumes a *constant* load. For a device whose draw actually
   varies, add a real power-metered plug instead — this won't track spikes
   or idle periods.
+
+## Examples
+
+**Daily cost of a plug** (template sensor, price as a fixed value or from an `input_number`):
+
+```yaml
+template:
+  - sensor:
+      - name: Coffee machine cost today
+        unit_of_measurement: "€"
+        state: >
+          {{ (states('sensor.coffee_machine_daily') | float(0) * 0.32) | round(2) }}
+```
+
+**Simulated always-on device** – e.g. a network switch drawing a constant 9 W: choose *Verbrauch simulieren*, name `Network switch`, 9 W. You get `Simulierte Energie` (kWh, total_increasing), `Leistung` (W) and the cycle counters – ready for the Energy dashboard as an *individual device*.
+
+**Garden pump with gate** – 700 W, only counted while `switch.garden_pump` is on: choose *Verbrauch simulieren*, 700 W, gate entity `switch.garden_pump`.
+
+## Troubleshooting
+
+| Problem | Fix |
+|---|---|
+| Sensor not offered in the setup dialog | It needs `device_class: energy` and `state_class: total_increasing` (or `total`). |
+| Counter starts at 0 after re-enabling | Intended – turning a cycle switch back on creates a fresh `utility_meter`. |
+| Leftover counters | Removing the integration entry removes all `utility_meter` entries it created. |
 
 ## License
 
